@@ -1,0 +1,5 @@
+endpoint: 'https://nestlecesomni--preprod.sandbox.my.salesforce.com/services/apexrest/RR/v1/comments'
+endpoint_error: 'https://nestlecesomni--preprod.sandbox.my.salesforce.com/services/apexrest/RR/v1/notifyError'
+subject_default: 'Agent response'
+drupal_user: '1'
+cron_interval: '3600'

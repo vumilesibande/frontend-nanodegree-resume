@@ -1,0 +1,9 @@
+dsu_engage_rr.admin_settings_form:
+  path: '/admin/config/lightnest/dsu-engage/connection-rr'
+  defaults:
+    _form: '\Drupal\dsu_engage_rr\Form\DsuEngageRRSettingsForm'
+    _title: 'Connection settings R&R'
+  requirements:
+    _permission: 'administer advanced dsu engage|administer full dsu engage'
+  options:
+    _admin_route: TRUE

@@ -1,0 +1,8 @@
+.dsu_engage_fields_settings tr:first-child{
+    font-weight: bold;
+    background-color: #F5F5F1;
+}
+
+.dsu_engage_fields_settings td:nth-child(even){
+    border-left: 1px solid #e6e4df;
+}

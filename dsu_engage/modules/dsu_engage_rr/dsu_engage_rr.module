@@ -1,0 +1,73 @@
+<?php
+
+/**
+ * @file
+ * Contains dsu_engage_rr.module.
+ */
+
+use Drupal\Core\Entity\EntityInterface;
+use Drupal\Core\Url;
+use Drupal\dsu_engage\ConstantsInterface;
+use Drupal\dsu_engage\Exception\AccessTokenRequestException;
+use Drupal\dsu_engage\Exception\RequestException;
+use Drupal\dsu_ratings_reviews\DsuRatingsReviewsConstants;
+
+/**
+ * Implements hook_ENTITY_TYPE_insert().
+ */
+function dsu_engage_rr_comment_insert(EntityInterface $entity): void {
+  $config = \Drupal::config('dsu_engage_rr.settings');
+
+  if ($entity->bundle() == DsuRatingsReviewsConstants::COMMENT_TYPE && $entity->get('uid')->target_id != $config->get('drupal_user')) {
+    \Drupal::service('dsu_engage_rr.engage_connect')->dsuEngageSendReview($entity);
+  }
+}
+
+/**
+ * Implements hook_cron().
+ */
+function dsu_engage_rr_cron():void {
+  $config_engage = \Drupal::config('dsu_engage.settings');
+  $config = \Drupal::config('dsu_engage_rr.settings');
+  $engageService = \Drupal::service('dsu_engage.engage_connect');
+  $noticeService = \Drupal::service('dsu_core.notice');
+  $state = \Drupal::state();
+
+  $cron_interval = $config->get('cron_interval');
+  $last_run = $state->get('dsu_engage_rr.last_cron_run', 0);
+
+  $time = time();
+  if ($time - $last_run >= $cron_interval) {
+
+    try {
+      $response =  $engageService->request([], "{$config->get('endpoint')}/{$config_engage->get(ConstantsInterface::API_CONTACT_ORIGIN)}" );
+
+      if ($response['status'] == 'success' && !empty($response['comments'])) {
+        $errors = \Drupal::service('dsu_engage_rr.engage_connect')->dsuEngagePublishReviews($response['comments']);
+        if (!empty($errors)) {
+          $engageService->request(['uniqueIdentifiers' => $errors], $config->get('endpoint_error'));
+        }
+      }
+
+      \Drupal::logger('dsu_engage_rr')
+        ->notice(t('Your reviews have been updated'));
+
+      // Update last run time.
+      $state->set('dsu_engage_rr.last_cron_run', $time);
+    }
+    catch (AccessTokenRequestException $e) {
+      $noticeService->sendNotice(
+        t('An error occurred while submitting the R&R integration with Engage Contact using cron: The access token is wrong.'),
+        Url::fromRoute('dsu_engage_rr.admin_settings_form'),
+      );
+    }
+    catch (RequestException $e) {
+      $noticeService->sendNotice(
+        t('An error occurred while submitting the R&R integration with Engage Contact using cron: @error_message', [
+          '@error_message' => $e->getMessage(),
+        ]),
+        Url::fromRoute('<current>'),
+      );
+    }
+  }
+}

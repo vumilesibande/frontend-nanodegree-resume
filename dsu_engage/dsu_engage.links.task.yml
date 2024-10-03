@@ -1,0 +1,24 @@
+dsu_engage.admin_settings_form:
+  route_name: dsu_engage.admin_settings_form
+  title: 'Connection settings'
+  base_route: dsu_engage.admin_settings_form
+
+dsu_engage.admin_page_settings_form:
+  route_name: dsu_engage.admin_page_settings_form
+  title: 'Form settings'
+  base_route: dsu_engage.admin_settings_form
+
+dsu_engage.admin_additional_settings_form:
+  route_name: dsu_engage.admin_additional_settings_form
+  title: 'Additional settings'
+  base_route: dsu_engage.admin_settings_form
+
+dsu_engage.admin_data_settings_form:
+  route_name: dsu_engage.admin_data_settings_form
+  title: 'Data settings'
+  base_route: dsu_engage.admin_settings_form
+
+dsu_engage.admin_tool_tips_settings_form:
+  route_name: dsu_engage.admin_tool_tips_settings_form
+  title: 'Tooltip settings'
+  base_route: dsu_engage.admin_settings_form

@@ -1,0 +1,7 @@
+dsu_engage_rr.admin_settings_form:
+  title: 'Connection settings R&R'
+  route_name: dsu_engage_rr.admin_settings_form
+  description: 'Configure Engage R&R parameters'
+  parent: dsu_engage.index
+  weight: 6
+

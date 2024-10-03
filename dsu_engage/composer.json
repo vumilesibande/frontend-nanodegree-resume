@@ -1,0 +1,30 @@
+{
+    "name": "lightnest/dsu_engage",
+    "description": "The ENGAGE project is a key solution within Nestlé’s Personalized Consumer Experiences (PCE) strategy. The Engage Contact Us integration in LightNest enables contact form submissions to be sent to the Consumer Services operations directly for further processing in a streamlined and efficient manner.",
+    "type": "drupal-module",
+    "authors": [
+        {
+            "name": "Nestle",
+            "homepage": "https://lightnest.nestle.com"
+        }
+    ],
+    "keywords": [
+        "Customer Data"
+    ],
+    "require": {
+        "ext-openssl": "*",
+        "firebase/php-jwt": "^6.4",
+        "drupal/address": "^2.0@beta",
+        "drupal/clientside_validation": "^4.0",
+        "lightnest/dsu_core": "^3.1"
+    },
+    "extra": {
+        "lightnest-browser": true,
+        "enable-patching": true,
+        "patches": {
+            "drupal/core": {
+                "1091852 - Display Bug when using #states (Forms API) with Ajax Request": "https://www.drupal.org/files/issues/2023-12-18/1091852-186.patch"
+            }
+        }
+    }
+}

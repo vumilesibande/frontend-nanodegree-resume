@@ -1,0 +1,19 @@
+<?php
+
+/**
+ * @file
+ * Install, update and uninstall functions for the dsu_enage module.
+ */
+
+/**
+ * Rewrite config for dsu_engage module.
+ */
+function dsu_engage_update_10201(): void {
+  \Drupal::service('dsu_core.config_replace')->rewriteModuleConfig('dsu_engage');
+
+  $config = \Drupal::configFactory()->getEditable('dsu_engage.settings');
+  $config->set('dsu_engage_privacy_policy_text', 'I agree to Nestlé processing my personal data as set out in the @link');
+  $config->set('dsu_engage_privacy_policy_link_text', 'Nestlé Privacy Notice');
+  $config->set('dsu_engage_privacy_policy_link_url', 'https://www.nestle.com/info/privacy');
+  $config->save();
+}
