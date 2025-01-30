@@ -111,7 +111,9 @@ class DsuEngageForm extends FormBase {
     $form['request_type'] = [
       '#type' => 'radios',
       '#title' => $this->t('What would you like to contact us about?'),
-      '#options' => array_intersect_key(ConstantsInterface::REQUEST_TYPE_OPTIONS, array_flip($available_reques_type)),
+      '#options' => array_map(function($option) {
+        return t($option);
+      }, array_intersect_key(ConstantsInterface::REQUEST_TYPE_OPTIONS, array_flip($available_reques_type))),
       '#default_value' => $form_state->getValue('request_type') ?? reset($available_reques_type),
       '#required' => TRUE,
       '#attributes' => [
@@ -308,10 +310,10 @@ class DsuEngageForm extends FormBase {
       $form['campaign'] = [
         '#type' => 'html_tag',
         '#tag' => 'p',
-        '#value' => $this->settings->get('dsu_engage_additional_footer_notes') . '&nbsp;',
+        '#value' => $this->t($this->settings->get('dsu_engage_additional_footer_notes')) . '&nbsp;',
         'link' => [
           '#type' => 'link',
-          '#title' => $this->settings->get('dsu_engage_additional_footer_contact'),
+          '#title' => $this->t($this->settings->get('dsu_engage_additional_footer_contact')),
           '#url' => Url::fromUri('tel:' . rawurlencode($this->settings->get('dsu_engage_additional_footer_contact'))),
           '#options' => ['external' => TRUE],
         ],
