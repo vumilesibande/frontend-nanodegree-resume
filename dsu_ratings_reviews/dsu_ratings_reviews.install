@@ -1,0 +1,102 @@
+<?php
+
+use Drupal\Core\Session\AccountInterface;
+use Drupal\dsu_ratings_reviews\DsuRatingsReviewsConstants;
+
+/**
+ * Implements hook_update_last_removed().
+ */
+function dsu_ratings_reviews_update_last_removed() {
+  return 8001;
+}
+
+/**
+ * Implements hook_install().
+ */
+function dsu_ratings_reviews_install() {
+  _dsu_ratings_reviews_set_permissions();
+}
+
+
+/**
+ * Set default comment and reply permissions for roles.
+ */
+function _dsu_ratings_reviews_set_permissions() {
+  user_role_grant_permissions(AccountInterface::ANONYMOUS_ROLE, [
+    'access comments',
+    'access content',
+    'flag dsu_ratings_comment_unuseful',
+    'flag dsu_ratings_comment_useful',
+    'unflag dsu_ratings_comment_unuseful',
+    'unflag dsu_ratings_comment_useful',
+    'view media'
+  ]);
+  user_role_grant_permissions(AccountInterface::AUTHENTICATED_ROLE, [
+    'access comments',
+    'access content',
+    'flag dsu_ratings_comment_unuseful',
+    'flag dsu_ratings_comment_useful',
+    'unflag dsu_ratings_comment_unuseful',
+    'unflag dsu_ratings_comment_useful',
+    'create dsu_comment_image media',
+    'post comments',
+    'view media'
+  ]);
+}
+
+/**
+ * Create new marketing_optin field && Update configs
+ */
+function dsu_ratings_reviews_update_9101(&$sandbox) {
+  \Drupal::service('dsu_core.config_replace')->rewriteModuleConfig('dsu_ratings_reviews');
+
+  /** @var \Drupal\Core\Entity\EntityDefinitionUpdateManagerInterface $entity_definition_update_manager */
+  $entity_definition_update_manager = \Drupal::entityDefinitionUpdateManager();
+
+  /** @var \Drupal\Core\Entity\EntityFieldManagerInterface $field_manager */
+  $field_manager = \Drupal::service('entity_field.manager');
+  if($field_definition = $field_manager->getFieldStorageDefinitions('comment')['field_dsu_marketing_opt_in']){
+    $entity_definition_update_manager->installFieldStorageDefinition('field_dsu_marketing_opt_in', 'comment', 'dsu_ratings_reviews', $field_definition);
+  }
+}
+
+/**
+ * Remove fivestar module dependencies
+ */
+function dsu_ratings_reviews_update_9301(&$sandbox) {
+  \Drupal::service('dsu_core.config_replace')->rewriteModuleConfig('dsu_ratings_reviews');
+  \Drupal::service('dsu_core.config_replace')->rewriteModuleConfig('dsu_ratings_reviews','optional');
+
+  /** @var \Drupal\Core\Entity\EntityDefinitionUpdateManagerInterface $entity_definition_update_manager */
+  $entity_definition_update_manager = \Drupal::entityDefinitionUpdateManager();
+
+  /** @var \Drupal\Core\Entity\EntityFieldManagerInterface $field_manager */
+  $field_manager = \Drupal::service('entity_field.manager');
+  /** @var \Drupal\field\Entity\FieldStorageConfig $field_definition */
+  $field_storage = \Drupal::entityTypeManager()->getStorage('field_storage_config')->load('comment.field_dsu_ratings');
+  $field_storage->setSetting('type', 'dsu_fivestar')->save();
+
+  $field = \Drupal::entityTypeManager()->getStorage('field_config')->load('comment.dsu_ratings_reviews_comment_type.field_dsu_ratings');
+  $field->setSetting('type', 'dsu_fivestar')->save();
+  if($field_definition = $field_manager->getFieldStorageDefinitions('comment')['field_dsu_ratings']){
+    $entity_definition_update_manager->updateFieldStorageDefinition($field_definition);
+  }
+
+  //Update ln_moderator role permissions
+  user_role_grant_permissions(DsuRatingsReviewsConstants::ROLE_MODERATOR,['access ratings reviews moderator settings']);
+
+  //Set default comment and reply permissions for roles.
+  _dsu_ratings_reviews_set_permissions();
+}
+
+/**
+ * Install module dependencies.
+ */
+function dsu_ratings_reviews_update_10301(&$sandbox) {
+  /** @var \Drupal\Core\Extension\Extension $extension */
+  $extension = \Drupal::service('extension.list.module')->get('dsu_ratings_reviews');
+
+  if(!empty($extension->requires)){
+    \Drupal::service('module_installer')->install(array_keys($extension->requires));
+  }
+}
