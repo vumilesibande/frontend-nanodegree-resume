@@ -234,7 +234,10 @@ html {
 .car_img {
   height: 100%;
   width: 100%;
-  object-fit: cover;
+  object-fit: contain;
+  @media (width >= 64rem) {
+    object-fit: cover;
+  }
 }
 .car_details {
   position: absolute;

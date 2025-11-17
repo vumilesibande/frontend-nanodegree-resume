@@ -31,7 +31,7 @@ html {
 }
 
 .car_img {
-  @apply w-full h-full object-cover;
+  @apply w-full h-full object-contain lg:object-cover;
 }
 
 .car_details {
