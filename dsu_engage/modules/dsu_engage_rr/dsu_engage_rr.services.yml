@@ -1,8 +1,0 @@
-services:
-  dsu_engage_rr.engage_connect:
-    class: Drupal\dsu_engage_rr\Services\EngageRRConnect
-    arguments: [ '@config.factory', '@http_client', '@module_handler', '@language_manager', '@logger.channel.dsu_engage_rr', '@entity_type.manager', '@dsu_engage.engage_connect', '@dsu_core.notice', '@datetime.time']
-  logger.channel.dsu_engage_rr:
-    class: Drupal\Core\Logger\LoggerChannel
-    factory: logger.factory:get
-    arguments: ['dsu_engage_rr']

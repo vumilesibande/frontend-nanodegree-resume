@@ -1,9 +1,0 @@
-name: 'Lightnest Engage R&R integration'
-type: module
-description: 'This module will connect the LightNest R&R functionality with Engage to send reviews and retrieve replies.'
-core_version_requirement: ^9 || ^10
-package: 'Lightnest'
-dependencies:
-  - lightnest:dsu_engage
-  - lightnest:dsu_ratings_reviews
-configure: dsu_engage_rr.admin_settings_form

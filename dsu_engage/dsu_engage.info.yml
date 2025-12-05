@@ -1,9 +1,0 @@
-name: Lightnest Engage
-description: 'The ENGAGE project is a key solution within Nestlé’s Personalized Consumer Experiences (PCE) strategy. The Engage Contact Us integration in LightNest enables contact form submissions to be sent to the Consumer Services operations directly for further processing in a streamlined and efficient manner.'
-type: module
-version: 3.1.0
-core_version_requirement: ^9 || ^10
-package: Lightnest
-dependencies:
-  - lightnest:dsu_core
-configure: dsu_engage.index
